@@ -5,14 +5,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
-import android.widget.Scroller;
 
 public class BouncedRecyclerView extends RecyclerView implements ObservableScroll {
   private static final String TAG = BouncedRecyclerView.class.getSimpleName();
   private static final int DIRECTION_UP = -1;
   private static final int DIRECTION_DOWN = 1;
-  private Scroller mFlingScroller;
+  private BouncedParent mParent;
   private boolean need = false;
 
   public BouncedRecyclerView(Context context) {
@@ -27,20 +25,11 @@ public class BouncedRecyclerView extends RecyclerView implements ObservableScrol
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
-    mFlingScroller = getScroller();
   }
 
   @Override
-  public Scroller getScroller() {
-    View parent = ((View) getParent());
-    Scroller scroller = null;
-    try {
-      BouncedParent bp = (BouncedParent) parent;
-      scroller = bp.getScroller();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return scroller;
+  public void setParent(BouncedParent parent) {
+    this.mParent = parent;
   }
 
   @Override
@@ -64,21 +53,27 @@ public class BouncedRecyclerView extends RecyclerView implements ObservableScrol
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
       super.onScrolled(recyclerView, dx, dy);
       scrollY += dy;
-      if (scrollY == 0) printLog("---到顶了---");
+      if (scrollY == 0) {
+        if (need && mParent.isOverSpeed()) {
+          mParent.startBounce();
+        }
+      }
     }
 
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
       super.onScrollStateChanged(recyclerView, newState);
-      printState(newState);
+      updateState(newState);
     }
 
-    private void printState(int newState) {
+    private void updateState(int newState) {
       if (newState == SCROLL_STATE_IDLE) {
+        need = false;
         printLog("静止状态");
       } else if (newState == SCROLL_STATE_DRAGGING) {
         printLog("拖动ing");
       } else if (newState == SCROLL_STATE_SETTLING) {
+        need = true;
         printLog("自己滚动ing");
       }
     }
