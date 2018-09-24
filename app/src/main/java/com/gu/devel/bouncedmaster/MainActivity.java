@@ -1,4 +1,4 @@
-package com.gu.devel.bouncedrecyclerview_master;
+package com.gu.devel.bouncedmaster;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
