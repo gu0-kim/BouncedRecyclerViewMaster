@@ -5,15 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.gu.devel.bounced_lib.recyclerview.BouncedParent
+    <com.gu.devel.bounced.recyclerview.BouncedRecyclerViewParent
+        android:id="@+id/parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.gu.devel.bounced_lib.recyclerview.BouncedRecyclerView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.gu.devel.bounced_lib.recyclerview.BouncedParent>
+    </com.gu.devel.bounced.recyclerview.BouncedRecyclerViewParent>
 
     <Button
         android:id="@+id/scrollBtn"
