@@ -9,7 +9,6 @@ import com.gu.devel.bounced.recyclerview.BouncedRecyclerViewParent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,11 +28,6 @@ public class MainActivity extends AppCompatActivity {
     rv.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
     mAdapter = new SimpleAdapter(getApplicationContext());
     rv.setAdapter(mAdapter);
-  }
-
-  @OnClick(R.id.scrollBtn)
-  public void onScrollBtnClicked() {
-    rv.setTranslationY(300);
   }
 
   @Override
