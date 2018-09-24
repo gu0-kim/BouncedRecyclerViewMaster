@@ -17,3 +17,5 @@
 ```
 ## 效果
 <img width="540" height=“960” src="https://github.com/gu0-kim/BouncedRecyclerViewMaster/blob/master/art/device-2018-09-24-223214.gif"></img>
+## 下载
+![image](https://github.com/gu0-kim/BouncedRecyclerViewMaster/blob/master/art/qrcode.png)
