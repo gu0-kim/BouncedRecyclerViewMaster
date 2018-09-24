@@ -1,8 +1,8 @@
-package com.gu.devel.bounced_lib.recyclerview;
+package com.gu.devel.bounced.base;
 
 public class BouncedUtil {
   private static final int MIN_SPEED = 500;
-  private static final int MAX_SPEED = 5000;
+  private static final int MAX_SPEED = 6000;
   private static final int MAX_OVER_DISTANCE = 300;
   private static final int MIN_OVER_DISTANCE = 50;
   private static final float rate =

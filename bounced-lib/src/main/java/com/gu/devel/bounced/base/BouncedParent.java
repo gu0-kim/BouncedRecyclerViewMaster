@@ -1,4 +1,4 @@
-package com.gu.devel.bounced_lib.recyclerview;
+package com.gu.devel.bounced.base;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -8,22 +8,21 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
-import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.OverScroller;
 
-public class BouncedParent extends FrameLayout {
-  ObservableScroll mChild;
-  OverScroller mScroller;
-  BounceAnimController mAnimController;
-  VelocityTracker mVelocityTracker;
-  private static final int DO_PULL_ANIM_SPEED = 200;
+public abstract class BouncedParent<T> extends FrameLayout {
+  protected T mChild;
+  protected OverScroller mScroller;
+  protected BounceAnimController mAnimController;
+  protected boolean startFling = false;
+  private boolean isAnimRunning;
 
-  private static final String TAG = BouncedParent.class.getSimpleName();
+  private static final int DO_PULL_ANIM_SPEED = 200;
+  private static final int ANIM_DURATION = 300;
 
   public BouncedParent(@NonNull Context context) {
     this(context, null);
@@ -31,19 +30,28 @@ public class BouncedParent extends FrameLayout {
 
   public BouncedParent(@NonNull Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
-    init();
   }
 
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
-    View child = getChildAt(0);
-    if (child instanceof ObservableScroll) {
-      mChild = (ObservableScroll) child;
-      mChild.setParent(this);
-      return;
+    if (bindBouncedChild()) {
+      init();
+    } else {
+      postException("Not find RecyclerView,Please check your code !");
     }
-    postException("Not find Bounced Child,Please check your code !");
+  }
+
+  protected abstract boolean bindBouncedChild();
+
+  protected void clear() {
+    mAnimController.clear();
+    mAnimController = null;
+    sQuinticInterpolator = null;
+  }
+
+  protected boolean isOverSpeed() {
+    return Math.abs(mScroller.getCurrVelocity()) > DO_PULL_ANIM_SPEED;
   }
 
   public void startBounce(boolean fromTop) {
@@ -60,35 +68,26 @@ public class BouncedParent extends FrameLayout {
   }
 
   private void init() {
-    mVelocityTracker = VelocityTracker.obtain();
     mScroller = new OverScroller(getContext(), sQuinticInterpolator);
     mAnimController = new BounceAnimController();
-  }
-
-  public OverScroller getScroller() {
-    return mScroller;
-  }
-
-  public boolean isOverSpeed() {
-    return Math.abs(mScroller.getCurrVelocity()) > DO_PULL_ANIM_SPEED;
   }
 
   @Override
   public void computeScroll() {
     super.computeScroll();
-    if (mScroller.computeScrollOffset()) {
+    if (mScroller != null && mScroller.computeScrollOffset()) {
       postInvalidate();
     }
   }
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
-
     return super.dispatchTouchEvent(ev);
+    //    return isAnimRunning || super.dispatchTouchEvent(ev);
   }
 
   // copy from RecyclerView
-  static final Interpolator sQuinticInterpolator =
+  static Interpolator sQuinticInterpolator =
       new Interpolator() {
         @Override
         public float getInterpolation(float t) {
@@ -114,9 +113,9 @@ public class BouncedParent extends FrameLayout {
       anim.addListener(this);
     }
 
-    public void config(float velocity) {
+    void config(float velocity) {
       comeback = false;
-      anim.setDuration(300);
+      anim.setDuration(ANIM_DURATION);
       bouncedDis = BouncedUtil.getDistanceByVelocity(velocity);
       anim.setInterpolator(downInterpolator);
       anim.setIntValues(0, -bouncedDis);
@@ -124,6 +123,7 @@ public class BouncedParent extends FrameLayout {
 
     @Override
     public void run() {
+      isAnimRunning = true;
       anim.start();
     }
 
@@ -143,6 +143,8 @@ public class BouncedParent extends FrameLayout {
         anim.setIntValues(-bouncedDis, 0);
         anim.start();
         comeback = true;
+      } else {
+        isAnimRunning = false;
       }
     }
 
@@ -151,5 +153,11 @@ public class BouncedParent extends FrameLayout {
 
     @Override
     public void onAnimationRepeat(Animator animation) {}
+
+    void clear() {
+      anim.removeAllUpdateListeners();
+      anim.removeAllListeners();
+      anim = null;
+    }
   }
 }

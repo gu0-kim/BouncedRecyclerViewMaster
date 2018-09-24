@@ -1,4 +1,4 @@
-package com.gu.devel.bounced_lib;
+package com.gu.devel.bounced;
 
 import org.junit.Test;
 
