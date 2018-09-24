@@ -1,4 +1,4 @@
-package com.gu.devel.bouncedrecyclerview_master;
+package com.gu.devel.bouncedmaster;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
