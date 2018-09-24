@@ -3,7 +3,7 @@ package com.gu.devel.bounced.base;
 public class BouncedUtil {
   private static final int MIN_SPEED = 500;
   private static final int MAX_SPEED = 6000;
-  private static final int MAX_OVER_DISTANCE = 300;
+  private static final int MAX_OVER_DISTANCE = 200;
   private static final int MIN_OVER_DISTANCE = 50;
   private static final float rate =
       (MAX_OVER_DISTANCE - MIN_OVER_DISTANCE) * 1.0f / (MAX_SPEED - MIN_SPEED);
