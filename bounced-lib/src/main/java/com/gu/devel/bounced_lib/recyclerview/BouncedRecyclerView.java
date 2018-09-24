@@ -42,6 +42,25 @@ public class BouncedRecyclerView extends RecyclerView implements ObservableScrol
     return !canScrollVertically(DIRECTION_DOWN);
   }
 
+  @Override
+  public boolean fling(int velocityX, int velocityY) {
+    Log.e(TAG, "----fling: (velocityX=" + velocityX + ",velocityY=" + velocityY + ")");
+    mParent.getScroller().forceFinished(true);
+    mParent
+        .getScroller()
+        .fling(
+            0,
+            0,
+            0,
+            velocityY,
+            Integer.MIN_VALUE,
+            Integer.MAX_VALUE,
+            Integer.MIN_VALUE,
+            Integer.MAX_VALUE);
+    mParent.postInvalidate();
+    return super.fling(velocityX, velocityY);
+  }
+
   class ScrollListener extends OnScrollListener {
     private int scrollY;
 
@@ -53,9 +72,13 @@ public class BouncedRecyclerView extends RecyclerView implements ObservableScrol
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
       super.onScrolled(recyclerView, dx, dy);
       scrollY += dy;
-      if (scrollY == 0) {
+      if (dy < 0 && isScroll2Top()) {
         if (need && mParent.isOverSpeed()) {
-          mParent.startBounce();
+          mParent.startBounce(true);
+        }
+      } else if (dy > 0 && isScroll2Bottom()) {
+        if (need && mParent.isOverSpeed()) {
+          mParent.startBounce(false);
         }
       }
     }
