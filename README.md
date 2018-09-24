@@ -15,4 +15,5 @@
             android:layout_height="match_parent" />
     </com.gu.devel.bounced.recyclerview.BouncedRecyclerViewParent>
 ```
-
+## 效果
+![image](https://github.com/gu0-kim/BouncedRecyclerViewMaster/blob/master/art/device-2018-09-24-223214.webm)
